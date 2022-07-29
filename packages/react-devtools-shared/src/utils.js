@@ -9,24 +9,6 @@
 
 import LRU from 'lru-cache';
 import {
-  isElement,
-  typeOf,
-  ContextConsumer,
-  ContextProvider,
-  ForwardRef,
-  Fragment,
-  Lazy,
-  Memo,
-  Portal,
-  Profiler,
-  StrictMode,
-  Suspense,
-} from 'react-is';
-import {
-  REACT_SUSPENSE_LIST_TYPE as SuspenseList,
-  REACT_TRACING_MARKER_TYPE as TracingMarker,
-} from 'shared/ReactSymbols';
-import {
   TREE_OPERATION_ADD,
   TREE_OPERATION_REMOVE,
   TREE_OPERATION_REMOVE_ROOT,
