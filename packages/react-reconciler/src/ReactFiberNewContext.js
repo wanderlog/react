@@ -419,21 +419,11 @@ function propagateParentContextChanges(
   let contexts = null;
   let parent: null | Fiber = workInProgress;
   let isInsidePropagationBailout = false;
-  let walkSteps = 0;
-  let didEarlyBailout = false;
-  let stepsSavedThisWalk = 0;
-  const walkStartTime = performance.now();
   while (parent !== null) {
     if (!isInsidePropagationBailout) {
       if ((parent.flags & NeedsPropagation) !== NoFlags) {
         isInsidePropagationBailout = true;
       } else if ((parent.flags & DidPropagateContext) !== NoFlags) {
-        didEarlyBailout = true;
-        let remaining = parent.return;
-        while (remaining !== null) {
-          stepsSavedThisWalk++;
-          remaining = remaining.return;
-        }
         break;
       }
     }
@@ -485,25 +475,8 @@ function propagateParentContextChanges(
         }
       }
     }
-    walkSteps++;
     parent = parent.return;
   }
-
-  const walkDuration = performance.now() - walkStartTime;
-  const reachedRoot = parent === null && !didEarlyBailout;
-  console.log(
-    '[context propagation]',
-    didEarlyBailout
-      ? `early bailout, ${stepsSavedThisWalk} steps saved`
-      : reachedRoot
-        ? 'reached root'
-        : 'stopped',
-    `(walked ${walkSteps} steps, ${walkDuration.toFixed(3)} ms` +
-      (stepsSavedThisWalk > 0 && walkSteps > 0
-        ? `, ~${((walkDuration * stepsSavedThisWalk) / walkSteps).toFixed(3)} ms saved`
-        : '') +
-      ')',
-  );
 
   if (contexts !== null) {
     // If there were any changed providers, search through the children and
